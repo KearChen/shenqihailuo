@@ -13,9 +13,9 @@ import (
 const OpenAIAPIURL = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
 
 func main() {
-	apiKey := ("d3d31f1d454e4cdea4fb829de406e147.rjBZyv4QRvO5oeu6")
+	apiKey := ("apikey")
 	if apiKey == "" {
-		log.Fatal("请设置环境变量 OPENAI_API_KEY")
+		log.Fatal("请设置环境变量 API_KEY")
 	}
 
 	// 初始化Gin路由
