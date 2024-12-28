@@ -3,20 +3,17 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
-	"log"
+	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-const OpenAIAPIURL = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
+const apiKey = "your-api-key"
+const apiUrl = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
+const model = "GLM-4-Air"
 
 func main() {
-	apiKey := ("apikey")
-	if apiKey == "" {
-		log.Fatal("请设置环境变量 API_KEY")
-	}
 
 	// 初始化Gin路由
 	router := gin.Default()
@@ -52,16 +49,17 @@ func getChatGPTAnswer(apiKey, question string) (string, error) {
 	prompt := "你是一只神秘的海螺，智慧深邃、充满神秘。请以神秘而简洁的风格回答问题："
 
 	requestBody, err := json.Marshal(map[string]interface{}{
-		"model": "GLM-4-Air",
+		"model": model,
 		"messages": []map[string]string{
-			{"role": "user", "content": prompt + question},
+			{"role": "system", "content": prompt},
+			{"role": "user", "content": question},
 		},
 	})
 	if err != nil {
 		return "", err
 	}
 
-	req, err := http.NewRequest("POST", OpenAIAPIURL, bytes.NewBuffer(requestBody))
+	req, err := http.NewRequest("POST", apiUrl, bytes.NewBuffer(requestBody))
 	if err != nil {
 		return "", err
 	}
@@ -75,7 +73,7 @@ func getChatGPTAnswer(apiKey, question string) (string, error) {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
 	}
